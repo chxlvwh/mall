@@ -1,6 +1,6 @@
 import '../app/globals.css';
 import 'semantic-ui-css/semantic.min.css';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Button, Checkbox, Form } from 'semantic-ui-react';
 import Link from 'next/link';
 import { signup } from '@/apis/auth';
@@ -23,6 +23,7 @@ export default () =>
         const [usernameError, setUsernameError] = useState<boolean>(false);
         const [passwordError, setPasswordError] = useState<boolean>(false);
         const [confirmPasswordError, setConfirmPasswordError] = useState<boolean>(false);
+        const [agreedError, setAgreedError] = useState<boolean>(false);
         const handleSubmit = async () => {
             if (!username) {
                 setUsernameError(true);
@@ -33,7 +34,10 @@ export default () =>
             if (!confirmPassword) {
                 setConfirmPasswordError(true);
             }
-            if (!username || !password || !confirmPassword) {
+            if (!agreed) {
+                setAgreedError(true);
+            }
+            if (!username || !password || !confirmPassword || !agreed) {
                 return;
             }
             const res = await signup({ username: username, password });
@@ -82,12 +86,13 @@ export default () =>
                                 }}
                             />
                         </Form.Field>
-                        <Form.Field>
+                        <Form.Field error={agreedError}>
                             <Checkbox
                                 label="I agree to the Terms and Conditions"
                                 checked={agreed}
                                 onChange={(e) => {
                                     setAgreed(!agreed);
+                                    setAgreedError(false);
                                 }}
                             />
                         </Form.Field>

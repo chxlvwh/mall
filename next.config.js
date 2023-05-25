@@ -1,14 +1,15 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
     async rewrites() {
-        return {
-            fallback: [
-                {
-                    source: '/api',
-                    destination: `http://localhost:3002/api`
-                }
-            ]
-        };
+        return [
+            {
+                source: '/api/:path*',
+                destination: 'http://localhost:3002/api/:path*'
+            }
+        ];
+    },
+    env: {
+        serverUrl: 'http://localhost:3002/api/v1'
     }
 };
 

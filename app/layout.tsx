@@ -1,8 +1,7 @@
-import 'semantic-ui-css/semantic.min.css';
 import './globals.css';
 import { Inter } from 'next/font/google';
 import AppHeader from '@/components/AppHeader';
-import { Suspense } from 'react';
+import React, { Suspense } from 'react';
 
 const inter = Inter({ subsets: ['latin'] });
 
