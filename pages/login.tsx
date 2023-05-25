@@ -49,7 +49,6 @@ const Login = () => {
                             name="username"
                             rules={[{ required: true, message: 'Please input your username!' }]}>
                             <Input
-                                defaultValue="lenny1"
                                 size="large"
                                 prefix={<UserOutlined className={`text-[rgb(67,56,202)]`} />}
                             />
@@ -60,7 +59,6 @@ const Login = () => {
                             name="password"
                             rules={[{ required: true, message: 'Please input your password!' }]}>
                             <Input.Password
-                                defaultValue="123456"
                                 size="large"
                                 prefix={<LockOutlined className="text-[rgb(67,56,202)]" />}
                             />
