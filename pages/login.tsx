@@ -1,11 +1,12 @@
 import '../app/globals.css';
 import React, { useState } from 'react';
-import { Button, Checkbox, ConfigProvider, Form, Input } from 'antd';
+import { Button, Checkbox, ConfigProvider, Form, Input, message } from 'antd';
 import { LockOutlined, UserOutlined } from '@ant-design/icons';
 import { $primaryColor, customThemeToken } from '@/utils/const';
 import { login, LoginProps } from '@/apis/auth';
 import { IncomingMessage } from 'http';
 import axios, { AxiosResponse } from 'axios';
+import Link from 'next/link';
 const cookie = require('cookie');
 
 const Login = () => {
@@ -19,6 +20,7 @@ const Login = () => {
                 password: loginProps.password
             });
             localStorage.setItem('SESSIONID', res.data.access_token);
+            message.success('登录成功');
             setSubmitLoading(false);
         } catch (err) {
             setSubmitLoading(false);
@@ -35,7 +37,7 @@ const Login = () => {
                     <span className="hidden">SEO</span>
                     Login
                 </h1>
-                <ConfigProvider theme={{ token: { ...customThemeToken, fontSize: 18 } }}>
+                <ConfigProvider theme={{ token: { ...customThemeToken, fontSize: 16 } }}>
                     <Form
                         name="loginForm"
                         size="large"
@@ -50,6 +52,7 @@ const Login = () => {
                             rules={[{ required: true, message: 'Please input your username!' }]}>
                             <Input
                                 size="large"
+                                placeholder={'Please input your username'}
                                 prefix={<UserOutlined className={`text-[rgb(67,56,202)]`} />}
                             />
                         </Form.Item>
@@ -60,12 +63,9 @@ const Login = () => {
                             rules={[{ required: true, message: 'Please input your password!' }]}>
                             <Input.Password
                                 size="large"
+                                placeholder={'Please input your password'}
                                 prefix={<LockOutlined className="text-[rgb(67,56,202)]" />}
                             />
-                        </Form.Item>
-
-                        <Form.Item name="remember" valuePropName="checked">
-                            <Checkbox>Remember me</Checkbox>
                         </Form.Item>
 
                         <Form.Item>
@@ -79,6 +79,11 @@ const Login = () => {
                         </Form.Item>
                     </Form>
                 </ConfigProvider>
+                <p className={'text-center text-xl'}>
+                    <Link href="/signup" className={`text-[${$primaryColor}]`}>
+                        Signup
+                    </Link>
+                </p>
             </div>
         </div>
     );
@@ -93,7 +98,7 @@ export const getServerSideProps = async ({ req }: { req: IncomingMessage }) => {
             headers: { Authorization: `bearer ${JSONCookie.SESSIONID}` }
         });
     } catch (e) {
-        console.info('Error: Caught an error when attempting to fetch menus', e.message);
+        console.info('Error: Caught an error when attempting to fetch menus', e);
     }
     return { props: { menus: response.data || [] } };
 };

@@ -1,117 +1,119 @@
 import '../app/globals.css';
 import 'semantic-ui-css/semantic.min.css';
 import React, { useState } from 'react';
-import { Button, Checkbox, Form } from 'semantic-ui-react';
+import { LoginProps, signup } from '@/apis/auth';
+import { Button, Checkbox, ConfigProvider, Form, Input, message } from 'antd';
+import { $primaryColor, customThemeToken } from '@/utils/const';
+import { LockOutlined, UserOutlined } from '@ant-design/icons';
 import Link from 'next/link';
-import { signup } from '@/apis/auth';
 
-// type Menus = {
-//     id: number;
-//     name: string;
-//     acl: string;
-//     path: string;
-//     order: number;
-// };
+const Signup = () => {
+    const [submitLoading, setSubmitLoading] = useState<boolean>(false);
 
-export default () =>
-    // { menus }: InferGetServerSidePropsType<typeof getServerSideProps>
-    {
-        const [username, setUsername] = useState<string>('');
-        const [password, setPassword] = useState<string | undefined>('');
-        const [confirmPassword, setConfirmPassword] = useState<string>('');
-        const [agreed, setAgreed] = useState<boolean>(false);
-        const [usernameError, setUsernameError] = useState<boolean>(false);
-        const [passwordError, setPasswordError] = useState<boolean>(false);
-        const [confirmPasswordError, setConfirmPasswordError] = useState<boolean>(false);
-        const [agreedError, setAgreedError] = useState<boolean>(false);
-        const handleSubmit = async () => {
-            if (!username) {
-                setUsernameError(true);
-            }
-            if (!password) {
-                setPasswordError(true);
-            }
-            if (!confirmPassword) {
-                setConfirmPasswordError(true);
-            }
-            if (!agreed) {
-                setAgreedError(true);
-            }
-            if (!username || !password || !confirmPassword || !agreed) {
-                return;
-            }
-            const res = await signup({ username: username, password });
-            console.log(res);
-        };
-        return (
-            <div className="h-full min-h-screen bg-[url('/img/login-bcg.jpg')] bg-cover pt-40">
-                <div className="md:w-1/3 xs:w-screen bg-white rounded-2xl ml-auto mr-auto p-10">
-                    <h1 className="text-center text-red-500">
-                        <span className="hidden">SEO</span>
-                        Sign Up
-                    </h1>
-                    <Form>
-                        <Form.Field error={usernameError}>
-                            <label>Username</label>
-                            <input
-                                placeholder="Please input password"
-                                value={username}
-                                onChange={(e) => {
-                                    setUsername(e.target.value);
-                                    setUsernameError(false);
-                                }}
-                            />
-                        </Form.Field>
-                        <Form.Field error={passwordError}>
-                            <label>Password</label>
-                            <input
-                                type="password"
-                                placeholder="Please input password"
-                                value={password}
-                                onChange={(e) => {
-                                    setPassword(e.target.value);
-                                    setPasswordError(false);
-                                }}
-                            />
-                        </Form.Field>
-                        <Form.Field error={confirmPassword !== password || confirmPasswordError}>
-                            <label>Confirm Password</label>
-                            <input
-                                type="password"
-                                placeholder="Please input password again"
-                                value={confirmPassword}
-                                onChange={(e) => {
-                                    setConfirmPassword(e.target.value);
-                                    setConfirmPasswordError(false);
-                                }}
-                            />
-                        </Form.Field>
-                        <Form.Field error={agreedError}>
-                            <Checkbox
-                                label="I agree to the Terms and Conditions"
-                                checked={agreed}
-                                onChange={(e) => {
-                                    setAgreed(!agreed);
-                                    setAgreedError(false);
-                                }}
-                            />
-                        </Form.Field>
-                        <div className="flex justify-between">
-                            <Button type="submit" color="green" onClick={handleSubmit}>
-                                Submit
-                            </Button>
-                            <Link className="align-middle leading-9" href="/login">
-                                Login
-                            </Link>
-                        </div>
-                    </Form>
-                </div>
-            </div>
-        );
+    const onFinish = async (loginProps: LoginProps) => {
+        setSubmitLoading(true);
+        try {
+            const res = await signup({
+                username: loginProps.username,
+                password: loginProps.password
+            });
+            localStorage.setItem('SESSIONID', res.data.access_token);
+            message.success('注册成功');
+            setSubmitLoading(false);
+        } catch (err) {
+            setSubmitLoading(false);
+        }
     };
 
-// export const getServerSideProps: GetServerSideProps<{ menus: Menus[] }> = async () => {
-//     const res = await fetch('http://localhost:3002/api/v1/menus');
-//     const menus = await res.json();
-//     return { props: { menus } };
-// };
+    const onFinishFailed = (errorInfo: any) => {
+        console.log('Failed:', errorInfo);
+    };
+    return (
+        <div className="h-full min-h-screen bg-[url('/img/login-bcg.jpg')] bg-cover pt-40">
+            <div className="md:w-1/3 xs:w-screen bg-white rounded-2xl ml-auto mr-auto py-10 px-20">
+                <h1 className={`text-center text-[${$primaryColor}] mb-10 text-2xl font-bold`}>
+                    <span className="hidden">SEO</span>
+                    Signup
+                </h1>
+                <ConfigProvider theme={{ token: { ...customThemeToken, fontSize: 16 } }}>
+                    <Form
+                        name="loginForm"
+                        size="large"
+                        initialValues={{ remember: true }}
+                        onFinish={onFinish}
+                        onFinishFailed={onFinishFailed}
+                        layout="vertical"
+                        autoComplete="off">
+                        <Form.Item
+                            label="Username"
+                            name="username"
+                            rules={[{ required: true, message: 'Please input your username!' }]}>
+                            <Input
+                                size="large"
+                                placeholder={'Please input your username'}
+                                prefix={<UserOutlined className={`text-[rgb(67,56,202)]`} />}
+                            />
+                        </Form.Item>
+
+                        <Form.Item
+                            label="Password"
+                            name="password"
+                            rules={[{ required: true, message: 'Please input your password!' }]}>
+                            <Input.Password
+                                size="large"
+                                placeholder={'Please input your password'}
+                                prefix={<LockOutlined className="text-[rgb(67,56,202)]" />}
+                            />
+                        </Form.Item>
+
+                        <Form.Item
+                            label="confirmPwd"
+                            name="confirmPwd"
+                            rules={[
+                                { required: true, message: 'Confirm password is not right!' },
+                                ({ getFieldValue }) => ({
+                                    validator(_, value) {
+                                        if (!value || getFieldValue('password') === value) {
+                                            return Promise.resolve();
+                                        }
+                                        return Promise.reject(
+                                            new Error(
+                                                'The two passwords that you entered do not match!'
+                                            )
+                                        );
+                                    }
+                                })
+                            ]}>
+                            <Input.Password
+                                size="large"
+                                placeholder={'Please confirm your password'}
+                                prefix={<LockOutlined className="text-[rgb(67,56,202)]" />}
+                            />
+                        </Form.Item>
+
+                        <Form.Item name="remember" valuePropName="checked">
+                            <Checkbox>Remember me</Checkbox>
+                        </Form.Item>
+
+                        <Form.Item>
+                            <Button
+                                className="w-full"
+                                type="primary"
+                                htmlType="submit"
+                                loading={submitLoading}>
+                                Submit
+                            </Button>
+                        </Form.Item>
+                    </Form>
+                </ConfigProvider>
+                <p className={'text-center text-xl'}>
+                    <Link href="/login" className={`text-[${$primaryColor}]`}>
+                        Login
+                    </Link>
+                </p>
+            </div>
+        </div>
+    );
+};
+
+export default Signup;
