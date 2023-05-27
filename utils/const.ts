@@ -1,6 +1,7 @@
-export const $primaryColor = 'rgb(67,56,202)';
+export const $primaryColor = '#ff6f33';
 export const customThemeToken = {
     colorPrimary: $primaryColor,
-    borderRadius: 6,
-    colorBorder: 'rgb(209,213,219)'
+    borderRadius: 4,
+    colorBorder: 'rgb(209,213,219)',
+    marginLG: 16
 };

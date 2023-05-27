@@ -13,7 +13,7 @@ export const metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
     return (
         <html lang="en">
-            <body className={`${inter.className} pt-20`}>
+            <body className={`${inter.className}`}>
                 <AppHeader />
                 <Suspense fallback={'loading'}>{children}</Suspense>
                 <footer>footer</footer>

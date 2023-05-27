@@ -1,5 +1,5 @@
-import '../app/globals.css';
 import React, { useState } from 'react';
+import '../app/globals.css';
 import { Button, Checkbox, ConfigProvider, Form, Input, message } from 'antd';
 import { LockOutlined, UserOutlined } from '@ant-design/icons';
 import { $primaryColor, customThemeToken } from '@/utils/const';
@@ -7,10 +7,13 @@ import { login, LoginProps } from '@/apis/auth';
 import { IncomingMessage } from 'http';
 import axios, { AxiosResponse } from 'axios';
 import Link from 'next/link';
+import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 const cookie = require('cookie');
 
 const Login = () => {
     const [submitLoading, setSubmitLoading] = useState<boolean>(false);
+    const router = useRouter();
 
     const onFinish = async (loginProps: LoginProps) => {
         setSubmitLoading(true);
@@ -21,6 +24,7 @@ const Login = () => {
             });
             localStorage.setItem('SESSIONID', res.data.access_token);
             message.success('登录成功');
+            router.push('/');
             setSubmitLoading(false);
         } catch (err) {
             setSubmitLoading(false);
@@ -33,7 +37,16 @@ const Login = () => {
     return (
         <div className="h-full min-h-screen bg-[url('/img/login-bcg.jpg')] bg-cover pt-40">
             <div className="md:w-1/3 xs:w-screen bg-white rounded-2xl ml-auto mr-auto py-10 px-20">
-                <h1 className={`text-center text-[${$primaryColor}] mb-10 text-2xl font-bold`}>
+                <Link href={'/'}>
+                    <Image
+                        src={'/next.svg'}
+                        alt={'logo'}
+                        width={40}
+                        height={180}
+                        className={'mr-5 content-center inline'}
+                    />
+                </Link>
+                <h1 className={`block text-center text-primary-color mb-10 text-2xl font-bold`}>
                     <span className="hidden">SEO</span>
                     Login
                 </h1>
@@ -53,7 +66,7 @@ const Login = () => {
                             <Input
                                 size="large"
                                 placeholder={'Please input your username'}
-                                prefix={<UserOutlined className={`text-[rgb(67,56,202)]`} />}
+                                prefix={<UserOutlined className={`text-primary-color`} />}
                             />
                         </Form.Item>
 
@@ -64,23 +77,26 @@ const Login = () => {
                             <Input.Password
                                 size="large"
                                 placeholder={'Please input your password'}
-                                prefix={<LockOutlined className="text-[rgb(67,56,202)]" />}
+                                prefix={<LockOutlined className={`text-primary-color`} />}
                             />
+                        </Form.Item>
+
+                        <Form.Item name="remember" valuePropName="checked">
+                            <Checkbox>Remember me</Checkbox>
                         </Form.Item>
 
                         <Form.Item>
                             <Button
-                                className="w-full"
-                                type="primary"
+                                className={`w-full text-white`}
                                 htmlType="submit"
                                 loading={submitLoading}>
-                                Submit
+                                Login
                             </Button>
                         </Form.Item>
                     </Form>
                 </ConfigProvider>
-                <p className={'text-center text-xl'}>
-                    <Link href="/signup" className={`text-[${$primaryColor}]`}>
+                <p className={`text-center text-sm`}>
+                    <Link href="/signup" className={`text-second-color`}>
                         Signup
                     </Link>
                 </p>
@@ -89,18 +105,18 @@ const Login = () => {
     );
 };
 
-export const getServerSideProps = async ({ req }: { req: IncomingMessage }) => {
-    const JSONCookie = cookie.parse(req.headers.cookie);
-    let response = {} as AxiosResponse;
-    try {
-        response = await axios.get(`${process.env.serverUrl}/menus`, {
-            withCredentials: true,
-            headers: { Authorization: `bearer ${JSONCookie.SESSIONID}` }
-        });
-    } catch (e) {
-        console.info('Error: Caught an error when attempting to fetch menus', e);
-    }
-    return { props: { menus: response.data || [] } };
-};
+// export const getServerSideProps = async ({ req }: { req: IncomingMessage }) => {
+// const JSONCookie = cookie.parse(req.headers.cookie);
+// let response = {} as AxiosResponse;
+// try {
+//     response = await axios.get(`${process.env.serverUrl}/menus`, {
+//         withCredentials: true,
+//         headers: { Authorization: `bearer ${JSONCookie.SESSIONID}` }
+//     });
+// } catch (e) {
+//     console.info('Error: Caught an error when attempting to fetch menus', e);
+// }
+// return { props: { menus: response.data || [] } };
+// };
 
 export default Login;

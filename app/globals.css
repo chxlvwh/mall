@@ -8,7 +8,7 @@
   [type='reset'],
   [type='submit'] {
     -webkit-appearance: button; /* 1 */
-    background-color: rgb(67,56,202); /* 2 */
+    background-color: #ff6f33; /* 2 */
     background-image: none; /* 2 */
   }
 }
