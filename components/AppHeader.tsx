@@ -1,11 +1,11 @@
 import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { IncomingMessage } from 'http';
-import axios, { AxiosResponse } from 'axios';
-const cookie = require('cookie');
+import { getIsLogin } from '@/utils/utils';
+import { HeaderRight } from '@/components/header/HeaderRight';
 
 const AppHeader = () => {
+    const isLogin = getIsLogin();
     return (
         <header className={'h-[64px] bg-white leading-[64px] flex justify-center'}>
             <div className={'w-[1200px] flex justify-between'}>
@@ -75,35 +75,10 @@ const AppHeader = () => {
                         </Link>
                     </ul>
                 </div>
-                <div className={'leading-10 flex items-center'}>
-                    <Link
-                        href={'/signup'}
-                        className={'bg-blue-500 h-10 px-10 rounded-full font-bold text-white mr-2'}>
-                        Signup
-                    </Link>
-                    <Link
-                        href={'/login'}
-                        className={`bg-primary-color h-10 px-10 rounded-full font-bold text-white`}>
-                        Login
-                    </Link>
-                </div>
             </div>
+            <HeaderRight isLogin={isLogin} />
         </header>
     );
-};
-
-export const getServerSideProps = async ({ req }: { req: IncomingMessage }) => {
-    const JSONCookie = cookie.parse(req.headers.cookie);
-    let response = {} as AxiosResponse;
-    try {
-        response = await axios.get(`${process.env.serverUrl}/menus`, {
-            withCredentials: true,
-            headers: { Authorization: `bearer ${JSONCookie.SESSIONID}` }
-        });
-    } catch (e) {
-        console.info('Error: Caught an error when attempting to fetch menus', e);
-    }
-    return { props: { menus: response.data || [] } };
 };
 
 export default AppHeader;
