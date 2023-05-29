@@ -1,11 +1,11 @@
 import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { getIsLogin } from '@/utils/utils';
+import { getJwtUser } from '@/utils/utils';
 import { HeaderRight } from '@/components/header/HeaderRight';
 
-const AppHeader = () => {
-    const isLogin = getIsLogin();
+const AppHeader = async () => {
+    const jwtUser = getJwtUser();
     return (
         <header className={'h-[64px] bg-white leading-[64px] flex justify-center'}>
             <div className={'w-[1200px] flex justify-between'}>
@@ -76,7 +76,7 @@ const AppHeader = () => {
                     </ul>
                 </div>
             </div>
-            <HeaderRight isLogin={isLogin} />
+            <HeaderRight jwtUser={jwtUser} />
         </header>
     );
 };

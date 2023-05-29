@@ -2,16 +2,17 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import React from 'react';
+import { jwtType } from '@/utils/utils';
 const Cookies = require('js-cookie');
 
-export const HeaderRight = ({ isLogin }: { isLogin: boolean }) => {
+export const HeaderRight = ({ jwtUser }: { jwtUser: jwtType }) => {
     const logout = () => {
         Cookies.remove('SESSIONID');
         location.reload();
     };
     return (
         <div className={'flex'}>
-            {!isLogin ? (
+            {!jwtUser ? (
                 <div className={'leading-10 flex items-center'}>
                     <Link
                         href={'/signup'}
@@ -26,8 +27,9 @@ export const HeaderRight = ({ isLogin }: { isLogin: boolean }) => {
                 </div>
             ) : (
                 <div>
-                    <span>Welcome</span>
+                    <span>Welcome， </span>
                     <div className={'inline group relative cursor-pointer'}>
+                        <span className={'text-primary-color'}>{jwtUser.username}</span>
                         <Image
                             className={'inline ml-2 cursor-pointer'}
                             src={'/img/user.png'}
@@ -37,7 +39,7 @@ export const HeaderRight = ({ isLogin }: { isLogin: boolean }) => {
                         />
                         <ul
                             className={
-                                'hidden group-hover:block bg-white absolute left-0 top-0 whitespace-nowrap leading-10 pt-10 bg-transparent'
+                                'hidden group-hover:block absolute left-0 top-0 whitespace-nowrap leading-10 pt-10 bg-transparent'
                             }>
                             {
                                 <li

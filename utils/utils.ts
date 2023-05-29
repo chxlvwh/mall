@@ -6,15 +6,16 @@ export const getSessionId = () => {
     return cookieStore.get('SESSIONID')?.value;
 };
 
-export const getIsLogin = (): boolean => {
+export type jwtType = { username: string; sub: string } | null;
+
+export const getJwtUser = (): jwtType => {
     const SESSIONID = getSessionId();
-    let isLogin: boolean;
+    let loginUser: jwtType;
 
     try {
-        jwt.verify(SESSIONID, process.env.jwtTokenPwd);
-        isLogin = true;
+        loginUser = jwt.verify(SESSIONID, process.env.jwtTokenPwd);
     } catch (e) {
-        isLogin = false;
+        loginUser = null;
     }
-    return isLogin;
+    return loginUser;
 };
