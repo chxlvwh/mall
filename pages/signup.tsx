@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import '../app/globals.css';
-import { LoginProps, signup } from '@/apis/auth';
+import { LoginProps, signup } from '@/apis/client/auth';
 import { Button, Checkbox, ConfigProvider, Form, Input, message } from 'antd';
 import { $primaryColor, customThemeToken } from '@/utils/const';
 import { LockOutlined, UserOutlined } from '@ant-design/icons';

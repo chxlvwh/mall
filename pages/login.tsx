@@ -2,14 +2,12 @@ import React, { useState } from 'react';
 import '../app/globals.css';
 import { Button, Checkbox, ConfigProvider, Form, Input, message } from 'antd';
 import { LockOutlined, UserOutlined } from '@ant-design/icons';
-import { $primaryColor, customThemeToken } from '@/utils/const';
-import { login, LoginProps } from '@/apis/auth';
-import { IncomingMessage } from 'http';
-import axios, { AxiosResponse } from 'axios';
+import { customThemeToken } from '@/utils/const';
+import { login, LoginProps } from '@/apis/client/auth';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-const cookie = require('cookie');
+import { getUserInfo } from '@/apis/client/user';
 
 const Login = () => {
     const [submitLoading, setSubmitLoading] = useState<boolean>(false);
@@ -24,6 +22,10 @@ const Login = () => {
             });
             localStorage.setItem('SESSIONID', res.data.access_token);
             message.success('登录成功');
+            const {
+                data: { data: userInfo }
+            } = await getUserInfo();
+            localStorage.setItem('userInfo', JSON.stringify(userInfo));
             router.push('/');
             setSubmitLoading(false);
         } catch (err) {

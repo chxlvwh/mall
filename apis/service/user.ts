@@ -2,7 +2,7 @@ import { jwtType } from '@/utils/utils';
 import { cookies } from 'next/headers';
 import axios from 'axios';
 
-export async function getUserInfo(jwtUser: jwtType) {
+export async function getUserInfo(jwtUser?: jwtType) {
     const SESSIONID = cookies().get('SESSIONID')?.value;
     const config = {
         headers: { Authorization: `bearer ${SESSIONID}` }
@@ -14,7 +14,7 @@ export async function getUserInfo(jwtUser: jwtType) {
             config
         );
     } catch (e) {
-        console.info('AppHeader caught error when get user info.', e?.message);
+        console.info('AppHeader caught error when get user info.', e);
     }
     return res.data;
 }
