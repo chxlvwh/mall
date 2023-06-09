@@ -1,15 +1,15 @@
-import { jwtType } from '@/utils/utils';
+import { JwtType } from '@/utils/utils';
 import { cookies } from 'next/headers';
 import axios from 'axios';
 
-export async function getUserInfo(jwtUser?: jwtType) {
+export async function getUserInfo(jwtUser?: JwtType) {
     const SESSIONID = cookies().get('SESSIONID')?.value;
     const config = {
         headers: { Authorization: `bearer ${SESSIONID}` }
     };
-    let res = {};
+    let res: { data: JwtType } = { data: { username: '', sub: '' } };
     try {
-        res = await axios.get<jwtType>(
+        res = await axios.get<JwtType>(
             `${process.env.serverUrl}/public/user/${jwtUser?.sub}`,
             config
         );

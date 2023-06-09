@@ -6,11 +6,11 @@ export const getSessionId = () => {
     return cookieStore.get('SESSIONID')?.value;
 };
 
-export type jwtType = { username: string; sub: string } | null;
+export type JwtType = { username: string; sub: string } | null;
 
-export const getJwtUser = (): jwtType => {
+export const getJwtUser = (): JwtType => {
     const SESSIONID = getSessionId();
-    let loginUser: jwtType;
+    let loginUser: JwtType;
 
     try {
         loginUser = jwt.verify(SESSIONID, process.env.jwtTokenPwd);
